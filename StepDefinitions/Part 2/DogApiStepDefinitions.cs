@@ -1,19 +1,18 @@
 using Lab3.Drivers;
+using RestSharp;
 
 namespace Lab3.StepDefinitions.Part_2;
 
 [Binding]
 public class DogApiStepDefinitions
 {
-    private string? _breed = String.Empty;
-
+    private string _breed = String.Empty;
     private RestResponse? _restResponse;
-    private HttpStatusCode _statusCode;
-    private readonly ApiClientDogApiDriver _api;
+    readonly RestClient _client;
 
-    public DogApiStepDefinitions(ApiClientDogApiDriver api)
+    public DogApiStepDefinitions()
     {
-        _api = api;
+        _client = new RestClient("https://dog.ceo/api");
     }
 
     [Given(@"dog breed - (.*)")]
@@ -25,40 +24,43 @@ public class DogApiStepDefinitions
     [When(@"get all dog breeds")]
     public async Task WhenGetAllDogBreeds()
     {
-        _restResponse = await _api.GetListOfAllBreeds();
+        var request = new RestRequest("breeds/list/all", Method.Get);
+        _restResponse = await _client.ExecuteAsync(request); ;
     }
 
     [When(@"get random image")]
     public async Task WhenGetRandomImage()
     {
-        _restResponse = await _api.GetRandomImage();
+        var request = new RestRequest("/breeds/image/random", Method.Get);
+        _restResponse = await _client.ExecuteAsync(request);
     }
 
     [When(@"get images by breed")]
     public async Task WhenGetImagesByBreed()
     {
-        _restResponse = await _api.GetImageByBreed(_breed);
+        var request = new RestRequest($"/breed/{_breed}/images", Method.Get);
+        _restResponse = await _client.ExecuteAsync(request);
     }
 
     [When(@"get list of sub-breed")]
     public async Task WhenGetListOfSub_Breed()
     {
-        _restResponse = await _api.GetListOfAllSubBreedsOfABreed(_breed);
+        var request = new RestRequest($"/breed/{_breed}/list", Method.Get);
+        _restResponse = await _client.ExecuteAsync(request);
     }
 
     [When(@"get image of sub-breed")]
     public async Task WhenGetImageOfSub_Breed()
     {
-        _restResponse = await _api.GetBrowseBreedList(_breed);
+        var request = new RestRequest($"/breed/{_breed}/images/random", Method.Get);
+        _restResponse = await _client.ExecuteAsync(request);
     }
 
 
     [Then(@"validate status code")]
     public void ThenValidateStatusCode()
     {
-        _statusCode = _restResponse.StatusCode;
-
-        var code = (int)_statusCode;
+        var code = (int)_restResponse.StatusCode;
         Assert.AreEqual(200, code);
     }
 }

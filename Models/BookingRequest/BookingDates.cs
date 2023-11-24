@@ -1,10 +1,10 @@
-﻿namespace Lab3.Models;
+﻿namespace Lab3.Models.BookingRequest;
 
 public class BookingDates
 {
     public BookingDates(string checking, string checkout)
     {
-        this.checkin = checking;
+        checkin = checking;
         this.checkout = checkout;
     }
 

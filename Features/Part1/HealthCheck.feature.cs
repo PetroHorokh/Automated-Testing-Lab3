@@ -91,7 +91,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 4
- testRunner.When("send request to get health check", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("create and send request for health check", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 5
  testRunner.Then("validate returned status code for health check", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

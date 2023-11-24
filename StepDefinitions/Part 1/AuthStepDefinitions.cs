@@ -6,15 +6,14 @@ namespace Lab3.StepDefinitions;
 [Binding]
 public class AuthStepDefinitions
 {
-    private readonly ApiClientDriver _api;
     private RestResponse _restResponse;
-    private HttpStatusCode _statusCode;
     private readonly User _user;
+    readonly RestClient _client;
 
-    public AuthStepDefinitions(ApiClientDriver api, User user)
+    public AuthStepDefinitions(User user)
     {
-        _api = api;
         _user = user;
+        _client = new RestClient("https://restful-booker.herokuapp.com/");
     }
 
     [Given("user name - (.*)")]
@@ -29,18 +28,19 @@ public class AuthStepDefinitions
         _user.password = password;
     }
 
-    [When("send request to generate access token")]
+    [When("create and send request to generate access token")]
     public async Task WhenSendRequestToGenerateAccessToken()
     {
-        _restResponse = await _api.PostCreateToken(_user);
+        var request = new RestRequest($"auth", Method.Post);
+        request.RequestFormat = DataFormat.Json;
+        request.AddJsonBody(_user);
+        _restResponse = await _client.ExecuteAsync(request); ;
     }
 
     [Then("validate status code for auth")]
     public void WhenValidateStatusCode()
     {
-        _statusCode = _restResponse.StatusCode;
-
-        var code = (int)_statusCode;
+        var code = (int)_restResponse.StatusCode;
         Assert.AreEqual(200, code);
     }
 }

@@ -4,5 +4,5 @@
 Scenario: Creates a new auth token
 	Given user name - admin
 	And password - passwordAdmin
-	When send request to generate access token
+	When create and send request to generate access token
 	Then validate status code for auth

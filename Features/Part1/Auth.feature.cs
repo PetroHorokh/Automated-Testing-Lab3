@@ -97,7 +97,7 @@ this.ScenarioInitialize(scenarioInfo);
  testRunner.And("password - passwordAdmin", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 7
- testRunner.When("send request to generate access token", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("create and send request to generate access token", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 8
  testRunner.Then("validate status code for auth", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");

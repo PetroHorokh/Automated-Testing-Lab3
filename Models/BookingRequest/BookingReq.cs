@@ -1,4 +1,4 @@
-﻿namespace Lab3.Models;
+﻿namespace Lab3.Models.BookingRequest;
 
 public class BookingReq
 {

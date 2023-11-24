@@ -6,26 +6,24 @@ namespace Lab3.StepDefinitions;
 public class HealthCheckStepDefinitions
 {
     private RestResponse? _restResponse;
-    private HttpStatusCode _statusCode;
-    private readonly ApiClientDriver _api;
+    readonly RestClient _client;
 
-    public HealthCheckStepDefinitions(ApiClientDriver api)
+    public HealthCheckStepDefinitions()
     {
-        _api = api;
+        _client = new RestClient("https://restful-booker.herokuapp.com/");
     }
 
-    [When("send request to get health check")]
+    [When("create and send request for health check")]
     public async Task SendRequestToGetHealthCheck()
     {
-        _restResponse = await _api.GetHealthCheck();
+        var request = new RestRequest("ping", Method.Get);
+        _restResponse = await _client.ExecuteAsync(request);
     }
 
     [Then("validate returned status code for health check")]
     public void ThenValidateStatusCode()
     {
-        _statusCode = _restResponse.StatusCode;
-
-        var code = (int)_statusCode;
+        var code = (int)_restResponse.StatusCode;
         Assert.AreEqual(201, code);
     }
 }

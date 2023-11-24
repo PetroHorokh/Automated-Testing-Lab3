@@ -1,6 +1,6 @@
 ﻿using Lab3.Drivers;
 using Lab3.Models;
-using System.Xml.Linq;
+using Lab3.Models.BookingRequest;
 
 namespace Lab3.StepDefinitions;
 
@@ -8,15 +8,16 @@ namespace Lab3.StepDefinitions;
 public class BookingStepDefinitions
 {
     private int _id;
+    private RestRequest _request;
     private RestResponse? _restResponse;
-    private HttpStatusCode _statusCode;
-    private readonly ApiClientDriver _api;
-    private readonly BookingReq _bookingReq;
+    private BookingReq _bookingReq;
+    readonly RestClient _client;
+    readonly ScenarioContext _scenarioContext;
 
-    public BookingStepDefinitions(BookingReq bookingReq,  ApiClientDriver api)
+    public BookingStepDefinitions(ScenarioContext scenarioContext)
     {
-        _bookingReq = bookingReq;
-        _api = api;
+        _scenarioContext = scenarioContext;
+        _client = new RestClient("https://restful-booker.herokuapp.com/");
     }
 
     [Given("booking id (.*)")]
@@ -28,7 +29,7 @@ public class BookingStepDefinitions
     [Given(@"user with first name (.*)")]
     public void GivenFirstName(string name)
     {
-        
+        _bookingReq = new BookingReq();
         _bookingReq.firstname = name;
     }
 
@@ -63,57 +64,116 @@ public class BookingStepDefinitions
         _bookingReq.additionalneeds = additionalNeeds;
     }
 
-    [When("send request to get booking by id")]
-    public async Task WhenSendRequestToGetBookingById()
+    [When(@"create request")]
+    public void WhenCreateRequest()
     {
-        _restResponse = await _api.GetBookingByIdRequest(_id);
+        var tags = _scenarioContext.ScenarioInfo.Tags;
+        var headers = new Dictionary<string, string>();
+        var resource = String.Empty;
+        var method = Method.Get;
+        var id = 0;
+
+        switch (tags[0])
+        {
+            case "noauth":
+                headers.Add("Accept", "application/json");
+
+                break;
+            case "auth":
+                headers.Add("Accept", "application/json");
+                headers.Add("Authorization", "Basic YWRtaW46cGFzc3dvcmQxMjM=");
+
+                break;
+        }
+
+        switch (tags[1])
+        {
+            case "getbookingids":
+                resource = "booking";
+                method = Method.Get;
+
+                break;
+            case "getbookingbyid":
+                resource = $"booking/{_id}";
+                method = Method.Get;
+
+                break;
+            case "createbooking":
+                resource = $"booking";
+                method = Method.Post;
+
+                break;
+            case "updatebooking":
+                resource = $"booking/{_id}";
+                method = Method.Put;
+
+                break;
+            case "patchbooking":
+                resource = $"booking/{_id}";
+                method = Method.Patch;
+
+                break;
+            case "deletebooking":
+                resource = $"booking/{_id}";
+                method = Method.Delete;
+
+                break;
+        }
+
+        var request = new Request
+        {
+            resource = resource,
+            id = id,
+            headers = headers,
+            body = new List<object>{_bookingReq},
+            method = method
+        };
+
+        _request = CreateRequest(request);
     }
 
-    [When(@"send request to get booking ids")]
-    public async Task WhenSendRequestToGetBookingIds()
+    [When(@"send request")]
+    public async Task WhenSendRequest()
     {
-        _restResponse = await _api.GetBookingIdsRequest(); ;
-    }
-
-    [When(@"send request to delete booking by id")]
-    public async Task WhenSendRequestToDeleteBookingById()
-    {
-        _restResponse = await _api.DeleteBookingByIdRequest(_id);
-    }
-
-    [When(@"send request to create booking")]
-    public async Task WhenSendRequestToCreateBooking()
-    {
-        _restResponse = await _api.CreateBookingRequest(_bookingReq);
-    }
-
-    [When(@"send request to update booking")]
-    public async Task WhenSendRequestToUpdateBooking()
-    {
-        _restResponse = await _api.UpdateBookingRequest(_bookingReq, _id);
-    }
-
-    [When(@"send request to patch booking")]
-    public async Task WhenSendRequestToPatchBooking()
-    {
-        _restResponse = await _api.PatchBookingRequest(_bookingReq, _id);
+        _restResponse = await SendRequest(_request);
     }
 
     [Then(@"validate returned status code\(200\)")]
     public void ThenValidateStatusCode200()
     {
-        _statusCode = _restResponse.StatusCode;
-
-        var code = (int)_statusCode;
+        var code = (int)_restResponse.StatusCode;
         Assert.AreEqual(200, code);
     }
 
     [Then(@"validate returned status code\(201\)")]
     public void ThenValidateStatusCode201()
     {
-        _statusCode = _restResponse.StatusCode;
-
-        var code = (int)_statusCode;
+        var code = (int)_restResponse.StatusCode;
         Assert.AreEqual(201, code);
+    }
+
+    private RestRequest CreateRequest(Request requestInfo)
+    {
+        var request = new RestRequest(requestInfo.resource, requestInfo.method);
+        if (requestInfo.headers != null)
+            foreach (var header in requestInfo.headers)
+            {
+                request.AddHeader(header.Key, header.Value);
+            }
+
+        request.RequestFormat = DataFormat.Json;
+
+        foreach (var bodyElement in requestInfo.body!)
+        {
+            if(bodyElement != null) request.AddJsonBody(bodyElement);
+        }
+
+        return request;
+    }
+
+    private async Task<RestResponse> SendRequest(RestRequest request)
+    {
+        var result = await _client.ExecuteAsync(request);
+        return result;
     }
 }
