@@ -218,7 +218,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 35
- testRunner.Given("booking id 3863", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("booking id 14", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 36
  testRunner.And("user with first name \"Pete\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -313,7 +313,7 @@ this.ScenarioInitialize(scenarioInfo);
             {
                 this.ScenarioStart();
 #line 58
- testRunner.Given("booking id 344", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("booking id 200", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 59
  testRunner.When("create request", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");

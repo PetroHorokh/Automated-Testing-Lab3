@@ -1,6 +1,3 @@
-using Lab3.Drivers;
-using RestSharp;
-
 namespace Lab3.StepDefinitions.Part_2;
 
 [Binding]

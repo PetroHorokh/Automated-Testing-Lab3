@@ -32,7 +32,7 @@ Scenario: Create new booking with valid inputs
 @auth
 @updatebooking
 Scenario: Update existing booking by id with valid inputs
-	Given booking id 3863
+	Given booking id 14
 	And user with first name "Pete"
 	And last name "Horokh"
 	And total price 111
@@ -55,7 +55,7 @@ Scenario: Patch existing booking by id
 @auth
 @deletebooking
 Scenario: Delete booking by id
-	Given booking id 344
+	Given booking id 200
 	When create request
 	And send request
 	Then validate returned status code(201)

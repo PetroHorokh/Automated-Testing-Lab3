@@ -1,6 +1,4 @@
-﻿using Lab3.Drivers;
-
-namespace Lab3.StepDefinitions;
+﻿namespace Lab3.StepDefinitions.Part_1;
 
 [Binding]
 public class HealthCheckStepDefinitions

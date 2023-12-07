@@ -1,14 +1,17 @@
-﻿using Lab3.Drivers;
+﻿using Gherkin;
 using Lab3.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp;
 
-namespace Lab3.StepDefinitions;
+namespace Lab3.StepDefinitions.Part_1;
 
 [Binding]
 public class AuthStepDefinitions
 {
-    private RestResponse _restResponse;
     private readonly User _user;
     readonly RestClient _client;
+    private RestResponse? _restResponse;
 
     public AuthStepDefinitions(User user)
     {
@@ -34,7 +37,7 @@ public class AuthStepDefinitions
         var request = new RestRequest($"auth", Method.Post);
         request.RequestFormat = DataFormat.Json;
         request.AddJsonBody(_user);
-        _restResponse = await _client.ExecuteAsync(request); ;
+        _restResponse = await _client.ExecuteAsync(request);
     }
 
     [Then("validate status code for auth")]

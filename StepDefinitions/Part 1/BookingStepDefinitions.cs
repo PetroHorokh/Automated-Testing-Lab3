@@ -1,5 +1,4 @@
-﻿using Lab3.Drivers;
-using Lab3.Models;
+﻿using Lab3.Models;
 using Lab3.Models.BookingRequest;
 
 namespace Lab3.StepDefinitions;
@@ -13,10 +12,17 @@ public class BookingStepDefinitions
     private BookingReq _bookingReq;
     readonly RestClient _client;
     readonly ScenarioContext _scenarioContext;
+    private readonly User _user;
+    public string token { get; set; }
 
     public BookingStepDefinitions(ScenarioContext scenarioContext)
     {
         _scenarioContext = scenarioContext;
+        _user = new User
+        {
+            username = "pete",
+            password = "12345",
+        };
         _client = new RestClient("https://restful-booker.herokuapp.com/");
     }
 
@@ -106,6 +112,7 @@ public class BookingStepDefinitions
             case "updatebooking":
                 resource = $"booking/{_id}";
                 method = Method.Put;
+
 
                 break;
             case "patchbooking":
